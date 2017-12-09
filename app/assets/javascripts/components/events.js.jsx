@@ -1,16 +1,21 @@
 class Events extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      events: this.props.events,
+      an_event: {
+        name: '',
+        description: '',
+        owner: '',
+        when: ''
+      },
+      errors: {}
+    };
   }
   render() {
-    events = this.props.events.map( (an_event) => {
-      return (
-        <tr key={an_event.id}>
-          <td>{an_event.name}</td>
-          <td>{an_event.description}</td>
-          <td>{an_event.owner}</td>
-          <td>{an_event.when}</td>
-        </tr>
+    const events = this.state.events.map((an_event) => {
+      return(
+        <Event an_event={an_event} key={an_event.id} />
       );
     });
     return (
