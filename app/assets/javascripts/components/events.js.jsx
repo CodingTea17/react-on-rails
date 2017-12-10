@@ -12,6 +12,52 @@ class Events extends React.Component {
       errors: {}
     };
   }
+
+  handleNewName(e) {
+    var newEvent = this.state.an_event;
+    newEvent.name = e.target.value;
+    this.setState({an_event: newEvent});
+  }
+
+  handleNewDescription(e) {
+    var newEvent = this.state.an_event;
+    newEvent.description = e.target.value;
+    this.setState({an_event: newEvent});
+  }
+
+  handleNewOwner(e) {
+    var newEvent = this.state.an_event;
+    newEvent.owner = e.target.value;
+    this.setState({an_event: newEvent});
+  }
+
+  handleNewEvent() {
+    var that = this;
+    $.ajax({
+      method: 'POST',
+      data: {
+        event: that.state.an_event,
+      },
+      url: '/events.json',
+      success: function(res) {
+        var newEventList = that.state.events;
+        newEventList.push(res);
+        that.setState({
+          events: newEventList,
+          an_event: {
+            name: '',
+            description: '',
+            owner: ''
+          },
+          errors: {}
+        });
+      },
+      error: function(res) {
+        that.setState({errors: res.responseJSON.errors})
+      }
+    });
+  }
+
   render() {
     const events = this.state.events.map((an_event) => {
       return(
@@ -33,6 +79,21 @@ class Events extends React.Component {
             </thead>
             <tbody>
               {events}
+              <tr>
+                <td>
+                  <input type="text" onChange={this.handleNewName.bind(this)} value={this.state.an_event.name} /><br />
+                  <span style={{color: 'red'}}>{this.state.errors.name}</span>
+                </td>
+                <td>
+                  <input type="text" onChange={this.handleNewDescription.bind(this)} value={this.state.an_event.description} /><br />
+                  <span style={{color: 'red'}}>{this.state.errors.description}</span>
+                </td>
+                <td>
+                  <input type="text" onChange={this.handleNewOwner.bind(this)} value={this.state.an_event.owner}/><br />
+                  <span style={{color: 'red'}}>{this.state.errors.owner}</span>
+                </td>
+                <td><button onClick={this.handleNewEvent.bind(this)}>Add</button></td>
+              </tr>
             </tbody>
           </table>
         </div>
